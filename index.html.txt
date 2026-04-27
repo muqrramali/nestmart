@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestMart PK</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #ff6b2b;
+  --secondary: #1a1a2e;
+  --green: #25D366;
+  --light: #f8f9fa;
+  --white: #ffffff;
+  --border: #e0e0e0;
+  --text: #2d2d2d;
+  --gray: #888;
+  --shadow: 0 5px 30px rgba(0,0,0,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Poppins',sans-serif; background:var(--light); color:var(--text); }
+.page { display:none; }
+.page.active { display:block; }
+
+/* STORE */
+.store-header { background:var(--secondary); padding:15px 5%; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+.logo { color:white; font-size:26px; font-weight:800; cursor:pointer; }
+.logo span { color:var(--primary); }
+.wa-btn { background:var(--green); color:white; padding:10px 20px; border-radius:50px; text-decoration:none; font-weight:600; font-size:14px; }
+.admin-link { color:rgba(255,255,255,0.4); font-size:12px; cursor:pointer; padding:8px; }
+.admin-link:hover { color:white; }
+
+.hero { background:linear-gradient(135deg,#1a1a2e,#0f3460); padding:70px 5%; text-align:center; color:white; }
+.hero-badge { display:inline-block; background:var(--primary); color:white; padding:6px 20px; border-radius:50px; font-size:13px; font-weight:600; margin-bottom:20px; }
+.hero h1 { font-size:clamp(32px,5vw,60px); font-weight:800; margin-bottom:15px; }
+.hero h1 span { color:var(--primary); }
+.hero p { color:rgba(255,255,255,0.7); font-size:17px; margin-bottom:35px; }
+.hero-btns { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; }
+.btn-orange { background:var(--primary); color:white; padding:14px 35px; border-radius:50px; font-weight:700; font-size:16px; border:none; cursor:pointer; text-decoration:none; }
+.btn-white { background:transparent; color:white; padding:14px 35px; border-radius:50px; font-weight:600; font-size:16px; border:2px solid rgba(255,255,255,0.3); text-decoration:none; }
+
+.store-section { padding:60px 5%; }
+.sec-title { text-align:center; margin-bottom:40px; }
+.sec-title h2 { font-size:32px; font-weight:800; color:var(--secondary); }
+.sec-title p { color:var(--gray); margin-top:5px; }
+.orange-line { width:50px; height:4px; background:var(--primary); margin:12px auto 0; border-radius:2px; }
+
+.products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:25px; }
+.prod-card { background:white; border-radius:18px; overflow:hidden; box-shadow:var(--shadow); transition:transform 0.3s; }
+.prod-card:hover { transform:translateY(-6px); }
+.prod-img-wrap { position:relative; }
+.prod-badge { position:absolute; top:12px; left:12px; background:var(--primary); color:white; padding:4px 12px; border-radius:50px; font-size:11px; font-weight:700; z-index:1; }
+.prod-img { width:100%; height:200px; display:flex; align-items:center; justify-content:center; font-size:70px; background:linear-gradient(135deg,#f0f0f0,#e8e8e8); }
+.prod-img img { width:100%; height:200px; object-fit:cover; }
+.prod-body { padding:18px; }
+.prod-body h3 { font-size:15px; font-weight:700; margin-bottom:6px; }
+.prod-body .desc { font-size:12px; color:var(--gray); margin-bottom:12px; line-height:1.5; }
+.prod-footer { display:flex; justify-content:space-between; align-items:center; }
+.old-price { font-size:12px; color:#bbb; text-decoration:line-through; display:block; }
+.new-price { font-size:22px; font-weight:800; color:var(--primary); }
+.order-wa { background:var(--green); color:white; padding:9px 16px; border-radius:50px; font-size:12px; font-weight:700; text-decoration:none; display:flex; align-items:center; gap:5px; }
+
+.why-section { background:var(--secondary); padding:60px 5%; }
+.why-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:25px; margin-top:40px; }
+.why-card { text-align:center; padding:30px 20px; background:rgba(255,255,255,0.05); border-radius:18px; color:white; }
+.why-icon { font-size:40px; margin-bottom:12px; display:block; }
+.why-card h3 { font-size:16px; font-weight:700; margin-bottom:8px; }
+.why-card p { font-size:13px; color:rgba(255,255,255,0.6); }
+
+.cta { background:var(--primary); padding:60px 5%; text-align:center; color:white; }
+.cta h2 { font-size:36px; font-weight:800; margin-bottom:10px; }
+.cta p { font-size:16px; opacity:0.9; margin-bottom:30px; }
+.wa-big { background:white; color:var(--green); padding:18px 45px; border-radius:50px; font-weight:800; font-size:18px; text-decoration:none; display:inline-flex; align-items:center; gap:10px; }
+
+footer { background:#111; color:rgba(255,255,255,0.5); text-align:center; padding:25px; font-size:13px; }
+footer span { color:var(--primary); font-weight:700; }
+
+.float-wa { position:fixed; bottom:25px; right:25px; background:var(--green); color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; text-decoration:none; box-shadow:0 5px 25px rgba(37,211,102,0.5); z-index:999; animation:bounce 2s infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+.empty-state { text-align:center; padding:80px 20px; grid-column:1/-1; }
+.empty-state .eicon { font-size:70px; margin-bottom:15px; display:block; }
+.empty-state h3 { font-size:22px; color:var(--secondary); margin-bottom:8px; }
+
+/* ADMIN */
+.admin-page { background:#f0f2f5; min-height:100vh; }
+.login-wrap { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px; }
+.login-card { background:white; border-radius:24px; padding:50px 40px; width:100%; max-width:420px; box-shadow:var(--shadow); text-align:center; }
+.login-card .logo-big { font-size:36px; font-weight:800; color:var(--secondary); margin-bottom:8px; }
+.login-card .logo-big span { color:var(--primary); }
+.form-group { margin-bottom:20px; text-align:left; }
+.form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:8px; color:var(--secondary); }
+.form-group input, .form-group select, .form-group textarea { width:100%; padding:13px 18px; border:2px solid var(--border); border-radius:12px; font-family:'Poppins',sans-serif; font-size:14px; outline:none; transition:border 0.2s; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); }
+.form-group textarea { resize:vertical; min-height:80px; }
+.btn-full { width:100%; background:var(--primary); color:white; padding:14px; border:none; border-radius:12px; font-family:'Poppins',sans-serif; font-size:16px; font-weight:700; cursor:pointer; }
+.btn-full:hover { background:#e55a1e; }
+.error-msg { color:red; font-size:13px; margin-top:10px; display:none; }
+
+.admin-layout { display:flex; min-height:100vh; }
+.sidebar { width:250px; background:var(--secondary); padding:25px 0; position:fixed; height:100vh; overflow-y:auto; z-index:50; }
+.sidebar-logo { padding:0 22px 25px; color:white; font-size:20px; font-weight:800; }
+.sidebar-logo span { color:var(--primary); }
+.sidebar-menu { list-style:none; }
+.sidebar-menu li a { display:flex; align-items:center; gap:12px; padding:13px 22px; color:rgba(255,255,255,0.6); text-decoration:none; font-size:14px; font-weight:500; cursor:pointer; transition:all 0.2s; }
+.sidebar-menu li a:hover, .sidebar-menu li a.active { background:rgba(255,107,43,0.15); color:white; border-right:3px solid var(--primary); }
+
+.admin-content { margin-left:250px; padding:25px; flex:1; }
+.admin-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
+.admin-topbar h1 { font-size:22px; font-weight:700; color:var(--secondary); }
+
+.stats-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:18px; margin-bottom:25px; }
+.stat-card { background:white; border-radius:16px; padding:22px; box-shadow:var(--shadow); display:flex; align-items:center; gap:14px; }
+.stat-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.stat-icon.orange { background:rgba(255,107,43,0.12); }
+.stat-icon.green { background:rgba(37,211,102,0.12); }
+.stat-icon.blue { background:rgba(59,130,246,0.12); }
+.stat-info h3 { font-size:24px; font-weight:800; color:var(--secondary); }
+.stat-info p { font-size:11px; color:var(--gray); }
+
+.admin-card { background:white; border-radius:18px; box-shadow:var(--shadow); overflow:hidden; }
+.admin-card-header { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.admin-card-header h3 { font-size:16px; font-weight:700; }
+.btn-add { background:var(--primary); color:white; padding:9px 20px; border:none; border-radius:10px; font-family:'Poppins',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; }
+.btn-add:hover { background:#e55a1e; }
+
+table { width:100%; border-collapse:collapse; }
+thead th { background:#f8f9fa; padding:13px 18px; text-align:left; font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:0.5px; }
+tbody td { padding:13px 18px; border-bottom:1px solid #f0f0f0; font-size:13px; vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:#fafafa; }
+.table-img { width:48px; height:48px; border-radius:10px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:22px; overflow:hidden; }
+.table-img img { width:48px; height:48px; object-fit:cover; border-radius:10px; }
+.badge-active { background:rgba(37,211,102,0.12); color:#16a34a; padding:3px 10px; border-radius:50px; font-size:11px; font-weight:700; }
+.btn-edit { background:rgba(59,130,246,0.1); color:#3b82f6; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; margin-right:5px; font-family:'Poppins',sans-serif; }
+.btn-delete { background:rgba(239,68,68,0.1); color:#ef4444; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; font-family:'Poppins',sans-serif; }
+.no-prods { text-align:center; padding:50px; color:var(--gray); font-size:14px; }
+
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+.add-form { padding:28px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+.img-preview { width:100%; height:160px; border:2px dashed var(--border); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:40px; cursor:pointer; overflow:hidden; transition:border 0.2s; flex-direction:column; gap:8px; color:var(--gray); font-size:14px; }
+.img-preview:hover { border-color:var(--primary); }
+.img-preview img { width:100%; height:100%; object-fit:cover; }
+.img-hint { font-size:11px; color:var(--gray); margin-top:5px; }
+
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:200; align-items:center; justify-content:center; padding:20px; }
+.modal-overlay.open { display:flex; }
+.modal { background:white; border-radius:22px; padding:30px; width:100%; max-width:520px; max-height:90vh; overflow-y:auto; }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:22px; }
+.modal-header h3 { font-size:19px; font-weight:700; }
+.close-btn { background:none; border:none; font-size:22px; cursor:pointer; color:var(--gray); }
+
+.toast { position:fixed; top:20px; right:20px; background:var(--secondary); color:white; padding:14px 22px; border-radius:12px; font-size:14px; z-index:9999; transform:translateX(200px); opacity:0; transition:all 0.4s; }
+.toast.show { transform:translateX(0); opacity:1; }
+.toast.success { background:#16a34a; }
+.toast.error { background:#ef4444; }
+
+@media(max-width:768px){
+  .sidebar { width:0; overflow:hidden; }
+  .admin-content { margin-left:0; }
+  .form-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== STORE ===== -->
+<div id="storePage" class="page active">
+  <header class="store-header">
+    <div class="logo">Nest<span>Mart</span> PK</div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <a href="https://wa.me/923145338766" class="wa-btn" target="_blank">💬 Order Now</a>
+      <span class="admin-link" onclick="showPage('loginPage')">⚙️ Admin</span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-badge">🔥 Pakistan's #1 Smart Kitchen Store</div>
+    <h1>Smart Products<br>For <span>Smart Homes</span></h1>
+    <p>Premium Kitchen & Home Gadgets — Fast Delivery All Over Pakistan</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-orange">🛒 Shop Now</a>
+      <a href="https://wa.me/923145338766" class="btn-white" target="_blank">💬 WhatsApp Order</a>
+    </div>
+  </div>
+
+  <section class="store-section" id="products">
+    <div class="sec-title">
+      <h2>Our Products</h2>
+      <p>Best selling products — Fast delivery all over Pakistan</p>
+      <div class="orange-line"></div>
+    </div>
+    <div class="products-grid" id="storeGrid"></div>
+  </section>
+
+  <div class="why-section">
+    <div class="sec-title">
+      <h2 style="color:white">Why Choose NestMart?</h2>
+      <div class="orange-line"></div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><span class="why-icon">🚚</span><h3>Fast Delivery</h3><p>2-4 days all over Pakistan</p></div>
+      <div class="why-card"><span class="why-icon">✅</span><h3>100% Original</h3><p>Genuine quality products</p></div>
+      <div class="why-card"><span class="why-icon">💬</span><h3>24/7 Support</h3><p>WhatsApp anytime</p></div>
+      <div class="why-card"><span class="why-icon">🔄</span><h3>Easy Returns</h3><p>7 day return policy</p></div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2>Ready to Order? 🛒</h2>
+    <p>Chat on WhatsApp — Fast reply guaranteed!</p>
+    <a href="https://wa.me/923145338766?text=Hi NestMart! I want to place an order." class="wa-big" target="_blank">💬 Order on WhatsApp</a>
+  </div>
+
+  <footer>
+    <p>© 2026 <span>NestMart PK</span> | 📞 03145338766 | 🚚 Delivery All Over Pakistan</p>
+  </footer>
+
+  <a href="https://wa.me/923145338766" class="float-wa" target="_blank">💬</a>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginPage" class="page admin-page">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo-big">Nest<span>Mart</span> PK</div>
+      <p style="color:var(--gray);margin-bottom:30px;font-size:14px;">Admin Panel — Login karo</p>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn-full" onclick="doLogin()">🔐 Login</button>
+      <p class="error-msg" id="loginErr">❌ Galat username ya password!</p>
+      <p style="margin-top:20px;font-size:12px;color:var(--gray);cursor:pointer" onclick="showPage('storePage')">← Store pe wapis jao</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN ===== -->
+<div id="adminPage" class="page admin-page">
+  <div class="admin-layout">
+    <div class="sidebar">
+      <div class="sidebar-logo">Nest<span>Mart</span></div>
+      <ul class="sidebar-menu">
+        <li><a id="nav-dashboard" class="active" onclick="switchTab('dashboard')">📊 Dashboard</a></li>
+        <li><a id="nav-products" onclick="switchTab('products')">📦 All Products</a></li>
+        <li><a id="nav-add" onclick="switchTab('add')">➕ Add Product</a></li>
+        <li><a onclick="showPage('storePage')">🛒 View Store</a></li>
+      </ul>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div id="tab-dashboard" class="tab-content active">
+        <div class="admin-topbar"><h1>📊 Dashboard</h1></div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-icon orange">📦</div><div class="stat-info"><h3 id="stat-total">0</h3><p>Total Products</p></div></div>
+          <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><h3 id="stat-active">0</h3><p>Active</p></div></div>
+          <div class="stat-card"><div class="stat-icon blue">💬</div><div class="stat-info"><h3>WA</h3><p>03145338766</p></div></div>
+        </div>
+        <div class="admin-card" style="padding:35px;text-align:center;">
+          <div style="font-size:55px;margin-bottom:15px;">🎉</div>
+          <h3 style="font-size:20px;margin-bottom:8px;">Admin Panel Ready!</h3>
+          <p style="color:var(--gray);margin-bottom:22px;">Products add karo, edit karo, delete karo — bilkul Daraz jaisa!</p>
+          <button class="btn-add" onclick="switchTab('add')" style="margin:0 auto;display:inline-flex;">➕ Pehla Product Add Karo</button>
+        </div>
+      </div>
+
+      <!-- ALL PRODUCTS -->
+      <div id="tab-products" class="tab-content">
+        <div class="admin-topbar">
+          <h1>📦 All Products</h1>
+          <button class="btn-add" onclick="switchTab('add')">➕ Add Product</button>
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>Products List</h3>
+            <span id="prodCountLabel" style="color:var(--gray);font-size:13px;"></span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="prodTableBody"><tr><td colspan="6" class="no-prods">Koi product nahi</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD PRODUCT -->
+      <div id="tab-add" class="tab-content">
+        <div class="admin-topbar"><h1 id="formHeading">➕ Add Product</h1></div>
+        <div class="admin-card">
+          <div class="add-form">
+            <input type="hidden" id="editingId">
+            <div class="form-group">
+              <label>📸 Product Image</label>
+              <div class="img-preview" id="imgBox" onclick="document.getElementById('fileInput').click()">
+                <span>📷</span><span>Click kar ke image upload karo</span>
+              </div>
+              <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleImg(this)">
+              <input type="hidden" id="imgData">
+              <p class="img-hint">JPG, PNG ya WEBP — koi bhi image</p>
+            </div>
+            <div class="form-group">
+              <label>📦 Product Name *</label>
+              <input type="text" id="fName" placeholder="e.g. Smart Watch Black Edition">
+            </div>
+            <div class="form-group">
+              <label>📝 Description</label>
+              <textarea id="fDesc" placeholder="Product ke baare mein likho..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>💰 Sale Price (PKR) *</label>
+                <input type="number" id="fPrice" placeholder="1499">
+              </div>
+              <div class="form-group">
+                <label>🏷️ Original Price (PKR)</label>
+                <input type="number" id="fOldPrice" placeholder="2500">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>📂 Category</label>
+                <select id="fCategory">
+                  <option>Kitchen Tools</option>
+                  <option>Home Decor</option>
+                  <option>Gadgets</option>
+                  <option>Organizers</option>
+                  <option>Smart Lights</option>
+                  <option>Cleaning</option>
+                  <option>Clothing</option>
+                  <option>Electronics</option>
+                  <option>Beauty</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>🔖 Badge</label>
+                <select id="fBadge">
+                  <option value="🔥 Hot">🔥 Hot</option>
+                  <option value="⭐ New">⭐ New</option>
+                  <option value="💥 Sale">💥 Sale</option>
+                  <option value="🏆 Best">🏆 Best</option>
+                  <option value="💎 Premium">💎 Premium</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex;gap:15px;flex-wrap:wrap;margin-top:10px;">
+              <button class="btn-full" onclick="saveProduct()" style="flex:1;min-width:180px;">💾 Save Karo</button>
+              <button onclick="resetForm()" style="flex:1;min-width:180px;background:#f0f0f0;color:var(--text);padding:14px;border:none;border-radius:12px;font-family:Poppins;font-size:15px;font-weight:600;cursor:pointer;">🔄 Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Product Edit Karo</h3>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="form-group"><label>📦 Name</label><input type="text" id="eName"></div>
+    <div class="form-group"><label>📝 Description</label><textarea id="eDesc"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>💰 Sale Price</label><input type="number" id="ePrice"></div>
+      <div class="form-group"><label>🏷️ Old Price</label><input type="number" id="eOldPrice"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>📂 Category</label>
+        <select id="eCategory"><option>Kitchen Tools</option><option>Home Decor</option><option>Gadgets</option><option>Organizers</option><option>Smart Lights</option><option>Cleaning</option><option>Clothing</option><option>Electronics</option><option>Beauty</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>🔖 Badge</label>
+        <select id="eBadge"><option value="🔥 Hot">🔥 Hot</option><option value="⭐ New">⭐ New</option><option value="💥 Sale">💥 Sale</option><option value="🏆 Best">🏆 Best</option><option value="💎 Premium">💎 Premium</option></select>
+      </div>
+    </div>
+    <input type="hidden" id="eId">
+    <button class="btn-full" onclick="saveEdit()">💾 Update Karo</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let products = JSON.parse(localStorage.getItem('nm_products') || 'null');
+if(!products) {
+  products = [
+    {id:1,name:'5-in-1 Kitchen Tool Set',desc:'Complete kitchen tool set — spatula, ladle, spoon & more. Heat resistant.',price:1499,oldPrice:2500,category:'Kitchen Tools',badge:'🔥 Hot',img:''},
+    {id:2,name:'Pro Chef Knife Set',desc:'Stainless steel sharp knives with wooden block. Professional quality.',price:1899,oldPrice:3000,category:'Kitchen Tools',badge:'⭐ New',img:''},
+    {id:3,name:'Magnetic Spice Organizer',desc:'Wall mounted magnetic spice rack. Space saving kitchen organizer.',price:999,oldPrice:1800,category:'Organizers',badge:'💥 Sale',img:''},
+    {id:4,name:'Smart LED Strip Lights',desc:'Color changing LED lights for home decoration. Remote control included.',price:1299,oldPrice:2200,category:'Smart Lights',badge:'🔥 Hot',img:''},
+    {id:5,name:'Touchless Soap Dispenser',desc:'Automatic touchless soap dispenser. Modern bathroom accessory.',price:849,oldPrice:1500,category:'Home Decor',badge:'⭐ New',img:''},
+    {id:6,name:'Mini Food Chopper',desc:'Electric mini food chopper. Chop onions, garlic in seconds.',price:1699,oldPrice:2800,category:'Gadgets',badge:'💥 Sale',img:''},
+  ];
+  save();
+}
+
+function save() { localStorage.setItem('nm_products', JSON.stringify(products)); }
+
+const EMOJI = {'Kitchen Tools':'🍳','Home Decor':'🏠','Gadgets':'🔧','Organizers':'🧺','Smart Lights':'💡','Cleaning':'🧹','Clothing':'👗','Electronics':'📱','Beauty':'💄','Other':'📦'};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='storePage') renderStore();
+  if(id==='adminPage') { updateStats(); renderTable(); }
+}
+
+function doLogin() {
+  const u=document.getElementById('loginUser').value;
+  const p=document.getElementById('loginPass').value;
+  if(u==='admin' && p==='nestmart123') {
+    document.getElementById('loginErr').style.display='none';
+    showPage('adminPage');
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.querySelectorAll('.sidebar-menu a').forEach(a=>a.classList.remove('active'));
+  const navEl = document.getElementById('nav-'+tab);
+  if(navEl) navEl.classList.add('active');
+  if(tab==='products') renderTable();
+  if(tab==='dashboard') updateStats();
+  if(tab==='add') resetForm();
+}
+
+function updateStats() {
+  document.getElementById('stat-total').textContent = products.length;
+  document.getElementById('stat-active').textContent = products.length;
+}
+
+function renderStore() {
+  const g = document.getElementById('storeGrid');
+  if(!products.length) {
+    g.innerHTML=`<div class="empty-state"><span class="eicon">📦</span><h3>Koi product nahi</h3><p>Admin se products add karo</p></div>`;
+    return;
+  }
+  g.innerHTML = products.map(p=>`
+    <div class="prod-card">
+      <div class="prod-img-wrap">
+        <div class="prod-badge">${p.badge}</div>
+        ${p.img?`<div class="prod-img" style="padding:0;font-size:0;"><img src="${p.img}" alt="${p.name}"></div>`:`<div class="prod-img">${EMOJI[p.category]||'📦'}</div>`}
+      </div>
+      <div class="prod-body">
+        <h3>${p.name}</h3>
+        <p class="desc">${p.desc}</p>
+        <div class="prod-footer">
+          <div>${p.oldPrice?`<span class="old-price">${Number(p.oldPrice).toLocaleString()} PKR</span>`:''}<span class="new-price">${Number(p.price).toLocaleString()} PKR</span></div>
+          <a href="https://wa.me/923145338766?text=Hi NestMart! I want to order: ${encodeURIComponent(p.name)} - ${p.price} PKR" class="order-wa" target="_blank">💬 Order</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderTable() {
+  const tb = document.getElementById('prodTableBody');
+  document.getElementById('prodCountLabel').textContent = products.length + ' products';
+  if(!products.length) { tb.innerHTML='<tr><td colspan="6" class="no-prods">Koi product nahi — Add karo! ➕</td></tr>'; return; }
+  tb.innerHTML = products.map(p=>`
+    <tr>
+      <td>${p.img?`<div class="table-img"><img src="${p.img}"></div>`:`<div class="table-img">${EMOJI[p.category]||'📦'}</div>`}</td>
+      <td><strong>${p.name}</strong></td>
+      <td>${p.category}</td>
+      <td><strong style="color:var(--primary)">${Number(p.price).toLocaleString()} PKR</strong></td>
+      <td><span class="badge-active">✅ Active</span></td>
+      <td>
+        <button class="btn-edit" onclick="openEdit(${p.id})">✏️ Edit</button>
+        <button class="btn-delete" onclick="deleteProd(${p.id})">🗑️ Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function handleImg(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('imgData').value = e.target.result;
+    document.getElementById('imgBox').innerHTML = `<img src="${e.target.result}">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveProduct() {
+  const name = document.getElementById('fName').value.trim();
+  const price = document.getElementById('fPrice').value;
+  if(!name||!price) { showToast('❌ Name aur price zaroori hain!','error'); return; }
+  const eid = document.getElementById('editingId').value;
+  const obj = {
+    id: eid ? parseInt(eid) : Date.now(),
+    name, desc: document.getElementById('fDesc').value,
+    price: parseInt(price),
+    oldPrice: document.getElementById('fOldPrice').value || null,
+    category: document.getElementById('fCategory').value,
+    badge: document.getElementById('fBadge').value,
+    img: document.getElementById('imgData').value || ''
+  };
+  if(eid) { const i=products.findIndex(p=>p.id==eid); products[i]=obj; showToast('✅ Product update ho gaya!'); }
+  else { products.push(obj); showToast('✅ Product add ho gaya!'); }
+  save(); updateStats(); resetForm();
+}
+
+function resetForm() {
+  document.getElementById('editingId').value='';
+  ['fName','fDesc','fPrice','fOldPrice','imgData'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fileInput').value='';
+  document.getElementById('imgBox').innerHTML='<span>📷</span><span>Click kar ke image upload karo</span>';
+  document.getElementById('formHeading').textContent='➕ Add Product';
+}
+
+function openEdit(id) {
+  const p=products.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('eId').value=id;
+  document.getElementById('eName').value=p.name;
+  document.getElementById('eDesc').value=p.desc;
+  document.getElementById('ePrice').value=p.price;
+  document.getElementById('eOldPrice').value=p.oldPrice||'';
+  document.getElementById('eCategory').value=p.category;
+  document.getElementById('eBadge').value=p.badge;
+  document.getElementById('editModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+
+function saveEdit() {
+  const id=parseInt(document.getElementById('eId').value);
+  const i=products.findIndex(p=>p.id===id);
+  products[i]={...products[i],
+    name:document.getElementById('eName').value,
+    desc:document.getElementById('eDesc').value,
+    price:parseInt(document.getElementById('ePrice').value),
+    oldPrice:document.getElementById('eOldPrice').value||null,
+    category:document.getElementById('eCategory').value,
+    badge:document.getElementById('eBadge').value
+  };
+  save(); renderTable(); closeModal(); showToast('✅ Product update ho gaya!');
+}
+
+function deleteProd(id) {
+  if(!confirm('Sure ho? Product delete hoga!')) return;
+  products=products.filter(p=>p.id!==id);
+  save(); renderTable(); updateStats(); showToast('🗑️ Deleted!');
+}
+
+function showToast(msg,type='success') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast',3000);
+}
+
+renderStore();
+</script>
+</body>
+</html>
